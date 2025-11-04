@@ -2,8 +2,7 @@ name: Bug Report
 description: Report a bug
 title: 'BUG:'
 labels: ['bug']
-projects:
-    - kevirui/6
+projects: ['users/kevirui/6']
 body:
     - type: markdown
       attributes:
