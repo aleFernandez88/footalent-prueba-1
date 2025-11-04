@@ -1,7 +1,8 @@
 name: Feature
 description: Abstract feature description
 title: 'FEAT:'
-projects: 'kevirui/6'
+projects: 
+    - kevirui/6
 body:
     - type: textarea
       id: what-feature
