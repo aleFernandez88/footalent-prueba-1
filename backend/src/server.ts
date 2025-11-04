@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Swagger documentation
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/api/v1/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // API routes
 app.use("/api", routes);
@@ -25,9 +25,9 @@ app.use("/api", routes);
 // Root endpoint
 app.get("/", (req: Request, res: Response) => {
   res.json({
-    message: "Welcome to Footalent API",
+    message: "Bienvenido a la API de Footalent",
     version: "1.0.0",
-    documentation: "/api-docs",
+    documentation: "/api/v1/docs",
     health: "/api/health",
   });
 });
@@ -36,7 +36,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     success: false,
-    message: "Route not found",
+    message: "Ruta no encontrada",
   });
 });
 
@@ -46,7 +46,7 @@ app.use(
     console.error(err.stack);
     res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: "Error interno del servidor",
       error: process.env.NODE_ENV === "development" ? err.message : undefined,
     });
   }
@@ -54,9 +54,11 @@ app.use(
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
-  console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs`);
-  console.log(`🔍 Health Check: http://localhost:${PORT}/api/health`);
+  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+  console.log(
+    `📚 Documentación de la API: http://localhost:${PORT}/api/v1/docs`
+  );
+  console.log(`🔍 Check de salud: http://localhost:${PORT}/api/health`);
 });
 
 export default app;

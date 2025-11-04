@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 
-const router = Router();
+const router: Router = Router();
 
 /**
  * @swagger
@@ -33,7 +33,7 @@ const router = Router();
 router.get("/", (req: Request, res: Response) => {
   res.json({
     success: true,
-    message: "Test endpoint is working!",
+    message: "Test endpoint trabajando!",
     data: {
       timestamp: new Date().toISOString(),
     },

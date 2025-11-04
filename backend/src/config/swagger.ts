@@ -4,11 +4,11 @@ import { SwaggerDefinition } from "swagger-jsdoc";
 const swaggerDefinition: SwaggerDefinition = {
   openapi: "3.0.0",
   info: {
-    title: "Footalent API",
+    title: "API - Footalent",
     version: "1.0.0",
-    description: "API documentation for Footalent backend",
+    description: "Documentación de la API",
     contact: {
-      name: "API Support",
+      name: "Support",
     },
   },
   servers: [

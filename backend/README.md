@@ -4,7 +4,7 @@ Backend API desarrollada con Node.js, Express, TypeScript, Prisma ORM y Swagger 
 
 ## 📋 Descripción
 
-Este backend proporciona una API RESTful para la aplicación Footalent. Está construido con tecnologías modernas y sigue las mejores prácticas de desarrollo.
+Este backend proporciona una API RESTful para la aplicación.
 
 ## 🛠️ Tecnologías
 
@@ -43,13 +43,17 @@ backend/
 
 - Node.js (v18 o superior)
 - PostgreSQL (v14 o superior)
-- pnpm (gestor de paquetes)
+- pnpm o npm (gestor de paquetes)
 
 ### Pasos de instalación
 
 1. **Instalar dependencias:**
    ```bash
    pnpm install
+   ```
+
+   ```bash
+   npm install
    ```
 
 2. **Configurar variables de entorno:**
@@ -93,14 +97,14 @@ http://localhost:3000
 - `GET /` - Información general de la API
 - `GET /api/health` - Health check del servidor
 - `GET /api/test` - Endpoint de prueba
-- `GET /api-docs` - Documentación interactiva de Swagger
+- `GET /api/v1/docs` - Documentación interactiva de Swagger
 
 ## 📚 Documentación
 
 La documentación completa de la API está disponible en Swagger UI cuando el servidor está corriendo:
 
 ```
-http://localhost:3000/api-docs
+http://localhost:3000/api/v1/docs
 ```
 
 ## 🔧 Configuración

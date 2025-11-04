@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Example model - you can modify or remove this
+// Example model
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique

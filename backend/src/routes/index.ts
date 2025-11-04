@@ -1,7 +1,7 @@
-import { Router } from "express";
+import { Router, Request, Response } from "express";
 import testRoutes from "./test.routes";
 
-const router = Router();
+const router: Router = Router();
 
 // Health check endpoint
 /**
@@ -28,7 +28,7 @@ const router = Router();
  *                   type: string
  *                   format: date-time
  */
-router.get("/health", (req, res) => {
+router.get("/health", (req: Request, res: Response) => {
   res.json({
     status: "OK",
     message: "Server is running",
