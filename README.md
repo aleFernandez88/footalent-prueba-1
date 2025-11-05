@@ -6,6 +6,7 @@
 ## Backend
 
 - Kevin Agustin Ruiz
+- Luana Trevisan
 
 ## Frontend
 
