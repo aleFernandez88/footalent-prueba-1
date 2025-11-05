@@ -1,6 +1,3 @@
-# Hola
-
-
 # Miembros del grupo
 
 ## Backend
