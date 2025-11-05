@@ -6,8 +6,8 @@
 ## Backend
 
 - Kevin Agustin Ruiz
-- Luana Trevisan
+
 
 ## Frontend
 
-- Tatin 1
+- Luana Trevisan
