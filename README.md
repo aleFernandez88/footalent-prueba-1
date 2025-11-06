@@ -31,6 +31,6 @@ practica-app/
 | _Ale Fernández_      | _alefernandez88_ | _(Frontend / Full-stack)_ |
 | _Kevin Agustin Ruiz_ | _kevirui_        | _(Backend / Full-stack)_  |
 | _Luana Trevisan_     | _luut04_         | _(Frontend / Full-stack)_ |
-|                      |                  |                           |
+| _Miguel Aponte_      | _XCODE89_        | _(Backend / Full-stack)_  |
 |                      |                  |                           |
 |                      |                  |                           |
