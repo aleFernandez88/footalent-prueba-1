@@ -3,8 +3,8 @@ import {
   isValidEmail,
   isValidPassword,
   sanitizeString,
-} from "../../utils/validators";
-import { sendError } from "../../utils/httpResponses";
+} from "@utils/validators";
+import { sendError } from "@utils/httpResponses";
 
 export const validateUserRegistration = (
   req: Request,
