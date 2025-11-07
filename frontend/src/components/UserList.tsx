@@ -59,27 +59,26 @@ export default function UserList() {// 3.  nuevo componente
 
  
   if (loading) { // Estado 1: Cargando...
-    return <p style={{ marginTop: '20px' }}>Cargando usuarios...</p>;
+    return <p className="mt-5">Cargando usuarios...</p>;
   }
 
 
   if (error) {  // Estado 2: Error
-    return <p style={{ color: 'red', marginTop: '20px' }}>Error: {error}</p>;
+    return <p className="mt-5 text-red-500">Error: {error}</p>;
   }
   
   
   if (users.length === 0) {// Estado 3: Éxito (pero "empty")
-    return <p style={{ marginTop: '20px' }}>No se encontraron usuarios.</p>;
+    return <p className="mt-5">No se encontraron usuarios.</p>;
   }
 
- 
-  return ( // Estado 4: Éxito
-    <div style={{ marginTop: '20px', textAlign: 'left', width: '100%', maxWidth: '500px' }}>
-      <h2>Lista de Usuarios (desde API)</h2>
+ // Estado 4: Éxito
+  return (
+    <div className="mt-5 text-left w-full max-w-lg"> {/* <-- CAMBIO PRINCIPAL */}
+      <h2 className="text-xl font-semibold mb-2">Lista de Usuarios (desde API)</h2> {/* (Añadí un estilo al h2 también) */}
       <ul>
-        {/*  .map() para crear un <li> por cada usuario */}
         {users.map(user => (
-          <li key={user.id}>
+          <li key={user.id} className="border-b border-gray-200 py-2"> {/* (Añadí estilos a la lista para que se vea mejor) */}
             <strong>{user.name}</strong> ({user.email})
           </li>
         ))}
