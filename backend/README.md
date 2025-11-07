@@ -26,6 +26,9 @@ backend/
 │   ├── routes/            # Definición de rutas
 │   │   ├── index.ts       # Rutas principales
 │   │   └── test.routes.ts # Rutas de prueba
+│   ├── core/            # Definición de rutas
+│   │   ├── users/       # Modelos, controladores, servicios de usuarios
+│   │       └── tests/       # Tests implementados para usuarios
 │   └── server.ts          # Archivo principal del servidor
 ├── prisma/                # Configuración de Prisma
 │   └── schema.prisma      # Schema de la base de datos

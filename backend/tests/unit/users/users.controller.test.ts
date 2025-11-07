@@ -1,7 +1,17 @@
-import { createUserController } from "../../../src/users/users.controller";
-import { UserService } from "../../../src/users/users.service";
+import { createUserController } from "../../../src/core/users/users.controller";
+import { UserService } from "../../../src/core/users/users.service";
 
-jest.mock("../../../src/users/users.service");
+jest.mock("../../../src/config/database", () => ({
+  __esModule: true,
+  default: {
+    user: {
+      create: jest.fn(),
+      findUnique: jest.fn(),
+    },
+  },
+}));
+
+jest.mock("../../../src/core/users/users.service");
 
 describe("Users Controller", () => {
   let req: any;
@@ -38,7 +48,9 @@ describe("Users Controller", () => {
   it("debe devolver 400 si ocurre un error en el servicio", async () => {
     req.body = { email: "test@example.com" };
 
-    (UserService.createUser as jest.Mock).mockRejectedValue(new Error("El usuario ya existe"));
+    (UserService.createUser as jest.Mock).mockRejectedValue(
+      new Error("El usuario ya existe")
+    );
 
     await createUserController(req, res);
 

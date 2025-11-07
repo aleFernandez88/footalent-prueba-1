@@ -1,8 +1,18 @@
-import { UserService } from "../../../src/users/users.service";
-import { UserRepository } from "../../../src/users/users.repository";
+import { UserService } from "../../../src/core/users/users.service";
+import { UserRepository } from "../../../src/core/users/users.repository";
+
+jest.mock("../../../src/config/database", () => ({
+  __esModule: true,
+  default: {
+    user: {
+      create: jest.fn(),
+      findUnique: jest.fn(),
+    },
+  },
+}));
 
 // ✅ Mockear el repository
-jest.mock("../../../src/users/users.repository");
+jest.mock("../../../src/core/users/users.repository");
 
 describe("UserService - createUser", () => {
   beforeEach(() => {
@@ -28,16 +38,16 @@ describe("UserService - createUser", () => {
   });
 
   it("debe lanzar error si el email no está presente", async () => {
-    await expect(UserService.createUser("", "Test"))
-      .rejects
-      .toThrow("El email es obligatorio");
+    await expect(UserService.createUser("", "Test")).rejects.toThrow(
+      "El email es obligatorio"
+    );
   });
 
   it("debe lanzar error si el usuario ya existe", async () => {
     (UserRepository.findByEmail as jest.Mock).mockResolvedValue({ id: 1 });
 
-    await expect(UserService.createUser("test@example.com", "Test"))
-      .rejects
-      .toThrow("El usuario ya existe");
+    await expect(
+      UserService.createUser("test@example.com", "Test")
+    ).rejects.toThrow("El usuario ya existe");
   });
 });

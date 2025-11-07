@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { createUserController } from "../users/users.controller";
+import { createUserController } from "./users.controller";
+import { validateUserRegistration } from "./users.validation";
 
 const router = Router();
 
@@ -25,10 +26,15 @@ const router = Router();
  *             type: object
  *             required:
  *               - email
+ *               - password
  *             properties:
  *               email:
  *                 type: string
  *                 example: "test@example.com"
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: "Passw0rd123"
  *               name:
  *                 type: string
  *                 example: "Miguel"
@@ -68,6 +74,6 @@ const router = Router();
  *       500:
  *         description: Error interno del servidor
  */
-router.post("/register", createUserController);
+router.post("/register", validateUserRegistration, createUserController);
 
 export default router;
