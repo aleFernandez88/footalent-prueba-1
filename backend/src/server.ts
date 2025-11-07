@@ -23,7 +23,7 @@ app.use("/api/v1/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api", routes);
 
 // Root endpoint
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (_req: Request, res: Response) => {
   res.json({
     message: "Bienvenido a la API de Footalent",
     version: "1.0.0",
@@ -33,7 +33,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // 404 handler
-app.use((req: Request, res: Response) => {
+app.use((_req: Request, res: Response) => {
   res.status(404).json({
     success: false,
     message: "Ruta no encontrada",
@@ -42,7 +42,7 @@ app.use((req: Request, res: Response) => {
 
 // Error handler
 app.use(
-  (err: Error, req: Request, res: Response, next: express.NextFunction) => {
+  (err: Error, _req: Request, res: Response, _next: express.NextFunction) => {
     console.error(err.stack);
     res.status(500).json({
       success: false,

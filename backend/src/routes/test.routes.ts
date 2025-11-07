@@ -30,7 +30,7 @@ const router: Router = Router();
  *                       type: string
  *                       format: date-time
  */
-router.get("/", (req: Request, res: Response) => {
+router.get("/", (_req: Request, res: Response) => {
   res.json({
     success: true,
     message: "Test endpoint trabajando!",
