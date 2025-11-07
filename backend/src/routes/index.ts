@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import testRoutes from "./test.routes";
-import userRoutes from "../core/users/user.routes";
-import { sendSuccess } from "../utils/httpResponses";
+import userRoutes from "@core/users/user.routes";
+import { sendSuccess } from "@utils/httpResponses";
 
 const router: Router = Router();
 

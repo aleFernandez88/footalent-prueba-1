@@ -1,5 +1,5 @@
 import { UserRepository } from "./users.repository";
-import { AppError } from "../../utils/errors";
+import { AppError } from "@utils/errors";
 
 export const UserService = {
   createUser: async (email: string, name?: string) => {

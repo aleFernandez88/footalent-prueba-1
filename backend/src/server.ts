@@ -2,10 +2,10 @@ import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
-import { swaggerSpec } from "./config/swagger";
-import routes from "./routes";
-import { sendError } from "./utils/httpResponses";
-import { isAppError } from "./utils/errors";
+import { swaggerSpec } from "@config/swagger";
+import routes from "@routes/index";
+import { sendError } from "@utils/httpResponses";
+import { isAppError } from "@utils/errors";
 
 // Load environment variables
 dotenv.config();

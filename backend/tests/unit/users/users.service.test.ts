@@ -1,8 +1,8 @@
-import { UserService } from "../../../src/core/users/users.service";
-import { UserRepository } from "../../../src/core/users/users.repository";
-import { AppError } from "../../../src/utils/errors";
+import { UserService } from "@core/users/users.service";
+import { UserRepository } from "@core/users/users.repository";
+import { AppError } from "@utils/errors";
 
-jest.mock("../../../src/config/database", () => ({
+jest.mock("@config/database", () => ({
   __esModule: true,
   default: {
     user: {
@@ -13,7 +13,7 @@ jest.mock("../../../src/config/database", () => ({
 }));
 
 // ✅ Mockear el repository
-jest.mock("../../../src/core/users/users.repository");
+jest.mock("@core/users/users.repository");
 
 describe("UserService - createUser", () => {
   beforeEach(() => {

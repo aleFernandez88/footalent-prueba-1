@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { sendSuccess } from "../utils/httpResponses";
+import { sendSuccess } from "@utils/httpResponses";
 
 const router: Router = Router();
 

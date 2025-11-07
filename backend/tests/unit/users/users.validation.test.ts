@@ -1,4 +1,4 @@
-import { validateUserRegistration } from "../../../src/core/users/users.validation";
+import { validateUserRegistration } from "@core/users/users.validation";
 
 describe("validateUserRegistration", () => {
   const buildResponse = () => {

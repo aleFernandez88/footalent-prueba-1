@@ -1,8 +1,8 @@
-import { createUserController } from "../../../src/core/users/users.controller";
-import { UserService } from "../../../src/core/users/users.service";
-import { AppError } from "../../../src/utils/errors";
+import { createUserController } from "@core/users/users.controller";
+import { UserService } from "@core/users/users.service";
+import { AppError } from "@utils/errors";
 
-jest.mock("../../../src/config/database", () => ({
+jest.mock("@config/database", () => ({
   __esModule: true,
   default: {
     user: {
@@ -12,7 +12,7 @@ jest.mock("../../../src/config/database", () => ({
   },
 }));
 
-jest.mock("../../../src/core/users/users.service");
+jest.mock("@core/users/users.service");
 
 describe("Users Controller", () => {
   let req: any;

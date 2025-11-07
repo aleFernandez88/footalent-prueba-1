@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UserService } from "./users.service";
-import { sendSuccess, sendError } from "../../utils/httpResponses";
-import { isAppError } from "../../utils/errors";
+import { sendSuccess, sendError } from "@utils/httpResponses";
+import { isAppError } from "@utils/errors";
 
 export const createUserController = async (req: Request, res: Response) => {
   try {
