@@ -1,7 +1,18 @@
-import { createUserController } from "../../../src/users/users.controller";
-import { UserService } from "../../../src/users/users.service";
+import { createUserController } from "@core/users/users.controller";
+import { UserService } from "@core/users/users.service";
+import { AppError } from "@utils/errors";
 
-jest.mock("../../../src/users/users.service");
+jest.mock("@config/database", () => ({
+  __esModule: true,
+  default: {
+    user: {
+      create: jest.fn(),
+      findUnique: jest.fn(),
+    },
+  },
+}));
+
+jest.mock("@core/users/users.service");
 
 describe("Users Controller", () => {
   let req: any;
@@ -29,20 +40,32 @@ describe("Users Controller", () => {
 
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({
-      id: 1,
-      email: "test@example.com",
-      name: "Test",
+      success: true,
+      statusCode: 201,
+      message: "Usuario creado exitosamente",
+      data: {
+        id: 1,
+        email: "test@example.com",
+        name: "Test",
+      },
     });
   });
 
   it("debe devolver 400 si ocurre un error en el servicio", async () => {
     req.body = { email: "test@example.com" };
 
-    (UserService.createUser as jest.Mock).mockRejectedValue(new Error("El usuario ya existe"));
+    (UserService.createUser as jest.Mock).mockRejectedValue(
+      new AppError("El usuario ya existe", 409)
+    );
 
     await createUserController(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "El usuario ya existe" });
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith({
+      success: false,
+      statusCode: 409,
+      message: "El usuario ya existe",
+      errors: null,
+    });
   });
 });
