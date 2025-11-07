@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import testRoutes from "./test.routes";
+import userRoutes from "./user.routes";
 
 const router: Router = Router();
 
@@ -38,5 +39,8 @@ router.get("/health", (_req: Request, res: Response) => {
 
 // Test routes
 router.use("/test", testRoutes);
+
+// User routes
+router.use("/users", userRoutes);
 
 export default router;
