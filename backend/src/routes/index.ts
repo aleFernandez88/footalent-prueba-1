@@ -28,7 +28,7 @@ const router: Router = Router();
  *                   type: string
  *                   format: date-time
  */
-router.get("/health", (req: Request, res: Response) => {
+router.get("/health", (_req: Request, res: Response) => {
   res.json({
     status: "OK",
     message: "Server is running",
