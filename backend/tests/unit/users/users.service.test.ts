@@ -1,5 +1,6 @@
 import { UserService } from "../../../src/core/users/users.service";
 import { UserRepository } from "../../../src/core/users/users.repository";
+import { AppError } from "../../../src/utils/errors";
 
 jest.mock("../../../src/config/database", () => ({
   __esModule: true,
@@ -38,16 +39,28 @@ describe("UserService - createUser", () => {
   });
 
   it("debe lanzar error si el email no está presente", async () => {
-    await expect(UserService.createUser("", "Test")).rejects.toThrow(
-      "El email es obligatorio"
+    const promise = UserService.createUser("", "Test");
+
+    await expect(promise).rejects.toBeInstanceOf(AppError);
+    await expect(promise).rejects.toEqual(
+      expect.objectContaining({
+        message: "El email es obligatorio",
+        statusCode: 400,
+      })
     );
   });
 
   it("debe lanzar error si el usuario ya existe", async () => {
     (UserRepository.findByEmail as jest.Mock).mockResolvedValue({ id: 1 });
 
-    await expect(
-      UserService.createUser("test@example.com", "Test")
-    ).rejects.toThrow("El usuario ya existe");
+    const promise = UserService.createUser("test@example.com", "Test");
+
+    await expect(promise).rejects.toBeInstanceOf(AppError);
+    await expect(promise).rejects.toEqual(
+      expect.objectContaining({
+        message: "El usuario ya existe",
+        statusCode: 409,
+      })
+    );
   });
 });

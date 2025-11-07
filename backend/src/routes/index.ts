@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import testRoutes from "./test.routes";
 import userRoutes from "../core/users/user.routes";
+import { sendSuccess } from "../utils/httpResponses";
 
 const router: Router = Router();
 
@@ -30,10 +31,12 @@ const router: Router = Router();
  *                   format: date-time
  */
 router.get("/health", (_req: Request, res: Response) => {
-  res.json({
-    status: "OK",
-    message: "Server is running",
-    timestamp: new Date().toISOString(),
+  sendSuccess(res, {
+    message: "Servidor operativo",
+    data: {
+      status: "OK",
+      timestamp: new Date().toISOString(),
+    },
   });
 });
 

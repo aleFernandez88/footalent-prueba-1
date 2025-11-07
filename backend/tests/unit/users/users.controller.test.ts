@@ -1,5 +1,6 @@
 import { createUserController } from "../../../src/core/users/users.controller";
 import { UserService } from "../../../src/core/users/users.service";
+import { AppError } from "../../../src/utils/errors";
 
 jest.mock("../../../src/config/database", () => ({
   __esModule: true,
@@ -39,9 +40,14 @@ describe("Users Controller", () => {
 
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({
-      id: 1,
-      email: "test@example.com",
-      name: "Test",
+      success: true,
+      statusCode: 201,
+      message: "Usuario creado exitosamente",
+      data: {
+        id: 1,
+        email: "test@example.com",
+        name: "Test",
+      },
     });
   });
 
@@ -49,12 +55,17 @@ describe("Users Controller", () => {
     req.body = { email: "test@example.com" };
 
     (UserService.createUser as jest.Mock).mockRejectedValue(
-      new Error("El usuario ya existe")
+      new AppError("El usuario ya existe", 409)
     );
 
     await createUserController(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "El usuario ya existe" });
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith({
+      success: false,
+      statusCode: 409,
+      message: "El usuario ya existe",
+      errors: null,
+    });
   });
 });

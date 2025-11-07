@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";
 import routes from "./routes";
+import { sendError } from "./utils/httpResponses";
+import { isAppError } from "./utils/errors";
 
 // Load environment variables
 dotenv.config();
@@ -34,8 +36,8 @@ app.get("/", (_req: Request, res: Response) => {
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
-  res.status(404).json({
-    success: false,
+  sendError(res, {
+    statusCode: 404,
     message: "Ruta no encontrada",
   });
 });
@@ -44,10 +46,19 @@ app.use((_req: Request, res: Response) => {
 app.use(
   (err: Error, _req: Request, res: Response, _next: express.NextFunction) => {
     console.error(err.stack);
-    res.status(500).json({
-      success: false,
+
+    if (isAppError(err)) {
+      return sendError(res, {
+        statusCode: err.statusCode,
+        message: err.message,
+        errors: err.details,
+      });
+    }
+
+    return sendError(res, {
+      statusCode: 500,
       message: "Error interno del servidor",
-      error: process.env.NODE_ENV === "development" ? err.message : undefined,
+      errors: process.env.NODE_ENV === "development" ? [err.message] : null,
     });
   }
 );

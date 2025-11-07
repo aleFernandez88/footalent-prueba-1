@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import { sendSuccess } from "../utils/httpResponses";
 
 const router: Router = Router();
 
@@ -31,8 +32,7 @@ const router: Router = Router();
  *                       format: date-time
  */
 router.get("/", (_req: Request, res: Response) => {
-  res.json({
-    success: true,
+  sendSuccess(res, {
     message: "Test endpoint trabajando!",
     data: {
       timestamp: new Date().toISOString(),

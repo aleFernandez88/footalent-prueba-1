@@ -4,11 +4,7 @@ import {
   isValidPassword,
   sanitizeString,
 } from "../../utils/validators";
-
-const buildErrorResponse = (errors: string[]) => ({
-  success: false,
-  errors,
-});
+import { sendError } from "../../utils/httpResponses";
 
 export const validateUserRegistration = (
   req: Request,
@@ -45,7 +41,11 @@ export const validateUserRegistration = (
   }
 
   if (errors.length > 0) {
-    return res.status(400).json(buildErrorResponse(errors));
+    return sendError(res, {
+      statusCode: 400,
+      message: "Datos de registro inválidos",
+      errors,
+    });
   }
 
   // Sanitize email and password before passing to controller
