@@ -14,6 +14,7 @@ describe("validateUserRegistration", () => {
         email: "Usuario@Test.com ",
         password: "Passw0rd1",
         name: "  John Doe  ",
+        role: "admin",
       },
     };
     const res = buildResponse();
@@ -25,6 +26,7 @@ describe("validateUserRegistration", () => {
     expect(req.body.email).toBe("usuario@test.com");
     expect(req.body.password).toBe("Passw0rd1");
     expect(req.body.name).toBe("John Doe");
+    expect(req.body.role).toBe("ADMIN");
     expect(res.status).not.toHaveBeenCalled();
   });
 
@@ -33,6 +35,7 @@ describe("validateUserRegistration", () => {
       body: {
         email: "not-an-email",
         password: "Passw0rd",
+        role: "USER",
       },
     };
     const res = buildResponse();
@@ -57,6 +60,7 @@ describe("validateUserRegistration", () => {
       body: {
         email: "test@example.com",
         password: "1234567",
+        role: "USER",
       },
     };
     const res = buildResponse();
@@ -82,6 +86,7 @@ describe("validateUserRegistration", () => {
         email: "test@example.com",
         password: "Passw0rd",
         name: "   ",
+        role: "USER",
       },
     };
     const res = buildResponse();
@@ -95,6 +100,30 @@ describe("validateUserRegistration", () => {
         success: false,
         errors: expect.arrayContaining([
           "El nombre debe ser una cadena de texto no vacía cuando se proporciona",
+        ]),
+      })
+    );
+    expect(next).not.toHaveBeenCalled();
+  });
+  it("devuelve 400 cuando el rol es inválido", () => {
+    const req: any = {
+      body: {
+        email: "test@example.com",
+        password: "Passw0rd1",
+        role: "manager",
+      },
+    };
+    const res = buildResponse();
+    const next = jest.fn();
+
+    validateUserRegistration(req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success: false,
+        errors: expect.arrayContaining([
+          "El rol proporcionado no es válido. Valores permitidos: ADMIN, USER",
         ]),
       })
     );

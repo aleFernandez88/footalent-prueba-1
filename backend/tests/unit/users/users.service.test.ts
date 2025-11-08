@@ -26,20 +26,31 @@ describe("UserService - createUser", () => {
       id: 1,
       email: "test@example.com",
       name: "Test",
+      role: "USER",
     });
 
-    const user = await UserService.createUser("test@example.com", "Test");
+    const user = await UserService.createUser(
+      "test@example.com",
+      "Test",
+      "USER"
+    );
 
     expect(user).toEqual({
       id: 1,
       email: "test@example.com",
       name: "Test",
+      role: "USER",
     });
     expect(UserRepository.create).toHaveBeenCalledTimes(1);
+    expect(UserRepository.create).toHaveBeenCalledWith(
+      "test@example.com",
+      "Test",
+      "USER"
+    );
   });
 
   it("debe lanzar error si el email no está presente", async () => {
-    const promise = UserService.createUser("", "Test");
+    const promise = UserService.createUser("", "Test", "USER");
 
     await expect(promise).rejects.toBeInstanceOf(AppError);
     await expect(promise).rejects.toEqual(
@@ -53,13 +64,31 @@ describe("UserService - createUser", () => {
   it("debe lanzar error si el usuario ya existe", async () => {
     (UserRepository.findByEmail as jest.Mock).mockResolvedValue({ id: 1 });
 
-    const promise = UserService.createUser("test@example.com", "Test");
+    const promise = UserService.createUser("test@example.com", "Test", "USER");
 
     await expect(promise).rejects.toBeInstanceOf(AppError);
     await expect(promise).rejects.toEqual(
       expect.objectContaining({
         message: "El usuario ya existe",
         statusCode: 409,
+      })
+    );
+  });
+
+  it("debe lanzar error si el rol es inválido", async () => {
+    (UserRepository.findByEmail as jest.Mock).mockResolvedValue(null);
+
+    const promise = UserService.createUser(
+      "test@example.com",
+      "Test",
+      "SUPERUSER" as any
+    );
+
+    await expect(promise).rejects.toBeInstanceOf(AppError);
+    await expect(promise).rejects.toEqual(
+      expect.objectContaining({
+        message: "Rol de usuario inválido",
+        statusCode: 400,
       })
     );
   });

@@ -11,6 +11,15 @@ const swaggerDefinition: SwaggerDefinition = {
       name: "Support",
     },
   },
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
+    },
+  },
   servers: [
     {
       url: `http://${process.env.SWAGGER_HOST || "localhost:3000"}`,

@@ -1,11 +1,11 @@
 import express, { Express, Request, Response } from "express";
-import cors from "cors";
 import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "@config/swagger";
 import routes from "@routes/index";
 import { sendError } from "@utils/httpResponses";
 import { isAppError } from "@utils/errors";
+import { corsMiddleware, corsPreflightMiddleware } from "@config/cors";
 
 // Load environment variables
 dotenv.config();
@@ -14,7 +14,8 @@ const app: Express = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors());
+app.use(corsMiddleware());
+app.options("*", corsPreflightMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

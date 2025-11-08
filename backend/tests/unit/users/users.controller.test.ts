@@ -28,12 +28,13 @@ describe("Users Controller", () => {
   });
 
   it("debe devolver 201 al crear un usuario correctamente", async () => {
-    req.body = { email: "test@example.com", name: "Test" };
+    req.body = { email: "test@example.com", name: "Test", role: "ADMIN" };
 
     (UserService.createUser as jest.Mock).mockResolvedValue({
       id: 1,
       email: "test@example.com",
       name: "Test",
+      role: "ADMIN",
     });
 
     await createUserController(req, res);
@@ -47,12 +48,13 @@ describe("Users Controller", () => {
         id: 1,
         email: "test@example.com",
         name: "Test",
+        role: "ADMIN",
       },
     });
   });
 
   it("debe devolver 400 si ocurre un error en el servicio", async () => {
-    req.body = { email: "test@example.com" };
+    req.body = { email: "test@example.com", role: "USER" };
 
     (UserService.createUser as jest.Mock).mockRejectedValue(
       new AppError("El usuario ya existe", 409)

@@ -5,9 +5,9 @@ import { isAppError } from "@utils/errors";
 
 export const createUserController = async (req: Request, res: Response) => {
   try {
-    const { email, name } = req.body;
+    const { email, name, role } = req.body;
 
-    const user = await UserService.createUser(email, name);
+    const user = await UserService.createUser(email, name, role);
 
     return sendSuccess(res, {
       statusCode: 201,
