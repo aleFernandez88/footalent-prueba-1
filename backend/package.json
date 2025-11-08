@@ -4,9 +4,9 @@
   "description": "Backend API server with Express, TypeScript, Prisma, and Swagger",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "start": "node dist/server.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "ts-node-dev --respawn --transpile-only --require tsconfig-paths/register src/server.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
@@ -29,6 +29,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },
@@ -36,6 +37,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jest": "^30.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.14.12",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.6",
@@ -43,6 +45,8 @@
     "prisma": "^6.19.0",
     "ts-jest": "^29.4.5",
     "ts-node-dev": "^2.0.0",
+    "tsc-alias": "^1.8.10",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.5.4"
   }
 }

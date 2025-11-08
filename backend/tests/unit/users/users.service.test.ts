@@ -1,8 +1,19 @@
-import { UserService } from "../../../src/users/users.service";
-import { UserRepository } from "../../../src/users/users.repository";
+import { UserService } from "@core/users/users.service";
+import { UserRepository } from "@core/users/users.repository";
+import { AppError } from "@utils/errors";
+
+jest.mock("@config/database", () => ({
+  __esModule: true,
+  default: {
+    user: {
+      create: jest.fn(),
+      findUnique: jest.fn(),
+    },
+  },
+}));
 
 // ✅ Mockear el repository
-jest.mock("../../../src/users/users.repository");
+jest.mock("@core/users/users.repository");
 
 describe("UserService - createUser", () => {
   beforeEach(() => {
@@ -15,29 +26,70 @@ describe("UserService - createUser", () => {
       id: 1,
       email: "test@example.com",
       name: "Test",
+      role: "USER",
     });
 
-    const user = await UserService.createUser("test@example.com", "Test");
+    const user = await UserService.createUser(
+      "test@example.com",
+      "Test",
+      "USER"
+    );
 
     expect(user).toEqual({
       id: 1,
       email: "test@example.com",
       name: "Test",
+      role: "USER",
     });
     expect(UserRepository.create).toHaveBeenCalledTimes(1);
+    expect(UserRepository.create).toHaveBeenCalledWith(
+      "test@example.com",
+      "Test",
+      "USER"
+    );
   });
 
   it("debe lanzar error si el email no está presente", async () => {
-    await expect(UserService.createUser("", "Test"))
-      .rejects
-      .toThrow("El email es obligatorio");
+    const promise = UserService.createUser("", "Test", "USER");
+
+    await expect(promise).rejects.toBeInstanceOf(AppError);
+    await expect(promise).rejects.toEqual(
+      expect.objectContaining({
+        message: "El email es obligatorio",
+        statusCode: 400,
+      })
+    );
   });
 
   it("debe lanzar error si el usuario ya existe", async () => {
     (UserRepository.findByEmail as jest.Mock).mockResolvedValue({ id: 1 });
 
-    await expect(UserService.createUser("test@example.com", "Test"))
-      .rejects
-      .toThrow("El usuario ya existe");
+    const promise = UserService.createUser("test@example.com", "Test", "USER");
+
+    await expect(promise).rejects.toBeInstanceOf(AppError);
+    await expect(promise).rejects.toEqual(
+      expect.objectContaining({
+        message: "El usuario ya existe",
+        statusCode: 409,
+      })
+    );
+  });
+
+  it("debe lanzar error si el rol es inválido", async () => {
+    (UserRepository.findByEmail as jest.Mock).mockResolvedValue(null);
+
+    const promise = UserService.createUser(
+      "test@example.com",
+      "Test",
+      "SUPERUSER" as any
+    );
+
+    await expect(promise).rejects.toBeInstanceOf(AppError);
+    await expect(promise).rejects.toEqual(
+      expect.objectContaining({
+        message: "Rol de usuario inválido",
+        statusCode: 400,
+      })
+    );
   });
 });

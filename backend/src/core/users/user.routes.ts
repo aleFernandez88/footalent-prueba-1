@@ -1,13 +1,13 @@
 import { Router } from "express";
-import {
-    createUserController,
-    getAllUsersController,
-    getUserByIdController
-} from "../users/users.controller";
-import { authenticateToken } from "../middlewares/authenticateToken";
-import { authorizeRolesOrSelf } from "../middlewares/authorizeRolesOrSelf";
-
-
+// import {
+//     createUserController,
+//     getAllUsersController,
+//     getUserByIdController
+// } from "./users.controller";
+import { createUserController, getAllUsersController, getUserByIdController } from "./users.controller";
+import { authenticateToken } from "@/middleware/auth.middleware";
+import { authorizeRolesOrSelf } from "@/middlewares/authorizeRolesOrSelf";
+import { validateUserRegistration } from "../users/users.validation";
 
 const router = Router();
 
@@ -33,50 +33,27 @@ const router = Router();
  *             type: object
  *             required:
  *               - email
+ *               - password
  *             properties:
  *               email:
  *                 type: string
  *                 example: "test@example.com"
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: "Passw0rd123"
  *               name:
  *                 type: string
  *                 example: "Miguel"
  *     responses:
  *       201:
  *         description: Usuario creado exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                   example: 1
- *                 email:
- *                   type: string
- *                   example: "test@example.com"
- *                 name:
- *                   type: string
- *                   example: "Miguel"
- *                 createdAt:
- *                   type: string
- *                   format: date-time
- *                 updatedAt:
- *                   type: string
- *                   format: date-time
  *       400:
  *         description: Datos inválidos o usuario ya existe
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "El usuario ya existe"
  *       500:
  *         description: Error interno del servidor
  */
-router.post("/register", createUserController);
+router.post("/register", validateUserRegistration, createUserController);
 
 /**
  * @swagger

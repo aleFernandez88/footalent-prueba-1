@@ -1,0 +1,74 @@
+import { Request, Response, NextFunction } from "express";
+import {
+  isValidEmail,
+  isValidPassword,
+  sanitizeString,
+} from "@utils/validators";
+import { sendError } from "@utils/httpResponses";
+import { USER_ROLES, UserRole } from "./users.types";
+
+type AllowedRole = UserRole;
+
+export const validateUserRegistration = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email, password, name, role } = req.body ?? {};
+  const errors: string[] = [];
+
+  // Email validation
+  if (!isValidEmail(email)) {
+    errors.push(
+      "El correo electrónico es obligatorio y debe tener un formato válido"
+    );
+  }
+
+  // Password validation
+  if (!isValidPassword(password)) {
+    errors.push(
+      "La contraseña es obligatoria, debe tener al menos 8 caracteres e incluir letras y números"
+    );
+  }
+
+  // Name validation (optional but must be a non-empty string when provided)
+  if (name !== undefined) {
+    const sanitizedName = sanitizeString(name);
+    if (!sanitizedName) {
+      errors.push(
+        "El nombre debe ser una cadena de texto no vacía cuando se proporciona"
+      );
+    } else {
+      req.body.name = sanitizedName;
+    }
+  }
+
+  // Role validation (optional, defaults to USER)
+  let normalizedRole: AllowedRole = "USER";
+
+  if (role !== undefined) {
+    const candidate = String(role).trim().toUpperCase();
+    if (USER_ROLES.includes(candidate as AllowedRole)) {
+      normalizedRole = candidate as AllowedRole;
+    } else {
+      errors.push(
+        "El rol proporcionado no es válido. Valores permitidos: ADMIN, USER"
+      );
+    }
+  }
+
+  if (errors.length > 0) {
+    return sendError(res, {
+      statusCode: 400,
+      message: "Datos de registro inválidos",
+      errors,
+    });
+  }
+
+  // Sanitize email and password before passing to controller
+  req.body.email = (email as string).trim().toLowerCase();
+  req.body.password = (password as string).trim();
+  req.body.role = normalizedRole;
+
+  return next();
+};

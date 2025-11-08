@@ -1,9 +1,11 @@
 import express, { Express, Request, Response } from "express";
-import cors from "cors";
 import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
-import { swaggerSpec } from "./config/swagger";
-import routes from "./routes";
+import { swaggerSpec } from "@config/swagger";
+import routes from "@routes/index";
+import { sendError } from "@utils/httpResponses";
+import { isAppError } from "@utils/errors";
+import { corsMiddleware, corsPreflightMiddleware } from "@config/cors";
 
 // Load environment variables
 dotenv.config();
@@ -12,7 +14,8 @@ const app: Express = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors());
+app.use(corsMiddleware());
+app.options("*", corsPreflightMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -34,8 +37,8 @@ app.get("/", (_req: Request, res: Response) => {
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
-  res.status(404).json({
-    success: false,
+  sendError(res, {
+    statusCode: 404,
     message: "Ruta no encontrada",
   });
 });
@@ -44,10 +47,19 @@ app.use((_req: Request, res: Response) => {
 app.use(
   (err: Error, _req: Request, res: Response, _next: express.NextFunction) => {
     console.error(err.stack);
-    res.status(500).json({
-      success: false,
+
+    if (isAppError(err)) {
+      return sendError(res, {
+        statusCode: err.statusCode,
+        message: err.message,
+        errors: err.details,
+      });
+    }
+
+    return sendError(res, {
+      statusCode: 500,
       message: "Error interno del servidor",
-      error: process.env.NODE_ENV === "development" ? err.message : undefined,
+      errors: process.env.NODE_ENV === "development" ? [err.message] : null,
     });
   }
 );

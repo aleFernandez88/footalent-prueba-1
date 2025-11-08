@@ -17,7 +17,17 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@core/*": ["./src/core/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@config/*": ["./src/config/*"],
+      "@routes/*": ["./src/routes/*"],
+      "@middleware/*": ["./src/middleware/*"],
+      "@tests/*": ["./tests/*"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "prisma", "jest.config.ts"]

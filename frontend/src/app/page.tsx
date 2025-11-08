@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import UserList from "../components/UserList";// importar el nuevo componente
 
 export default function Home() {
   return (
     <section className="h-[100vh]">
       <div className="flex items-center justify-center flex-col  h-full">
-        <h1 id="hjjjjjeading" className="heading  text-4xl  font-bold mb-5">
+        <h1 id="heading" className="heading  text-4xl  font-bold mb-5">
           welcome to next.js!
         </h1>
 
@@ -24,6 +25,7 @@ export default function Home() {
             Register
           </Link>
         </div>
+        <UserList />{/* usar el nuevo componente aquí  */}
       </div>
     </section>
   );

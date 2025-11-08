@@ -8,6 +8,8 @@ import FormRow from "@/src/components/FormRow";
 import SubmitButton from "@/src/components/SubmitButton";
 import Link from "next/link";
 
+//const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));  //esta linea sirve para visualizar la carga
+
 interface LoginFormInputs {
   email: string;
   password: string;
@@ -19,6 +21,8 @@ const inputStyle =
 
 const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+// (Task 40) Añadimos estado para el error del servidor
+  const [serverError, setServerError] = useState<string | null>(null); 
 
   const {
     register,
@@ -29,18 +33,27 @@ const Login: React.FC = () => {
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     setIsLoading(true);
+    setServerError(null); // (Task 40) Reseteamos el error del servidor antes de enviar
 
     try {
+     // await sleep(1500); // Pausa por 1.5 segundos para simular carga
       console.log("¡Has iniciado sesión correctamente! 🎉");
       console.log("Data: ", data);
-    } catch (error) {
+
+      // --- Para probar el error, descomentar la siguiente línea ---
+      // throw new Error("El correo electrónico o la contraseña proporcionados son incorrectos.");
+      reset();// Resetea el formulario solo si el login fue exitoso
+
+    } catch (error: any) {// (Task 40) Capturamos el error del servidor
+      setServerError(error.message || "Ocurrió un error inesperado");
+
       console.log(
         "El correo electrónico o la contraseña proporcionados son incorrectos."
       );
       console.log(error);
     } finally {
       setIsLoading(false);
-      reset();
+      //reset(); task 40 , lo movemos al try , para q no se borre el form si hay error
     }
   };
 
@@ -56,6 +69,13 @@ const Login: React.FC = () => {
             Acceder a tu cuenta.
           </h1>
         </div>
+
+        {/* (Task 40) Mostrar el error del servidor aquí */}
+        {serverError && (
+          <div className="p-3 my-4 text-red-800 bg-red-100 rounded-xl text-sm font-medium">
+            {serverError}
+          </div>
+        )}
 
         <form
           className=" flex flex-col gap-7"
