@@ -1,9 +1,10 @@
 import prisma from "@config/database";
+import { UserRole } from "./users.types";
 
 export const UserRepository = {
-  create: async (email: string, name?: string) => {
+  create: async (email: string, name: string | undefined, role: UserRole) => {
     return prisma.user.create({
-      data: { email, name },
+      data: { email, name, role },
     });
   },
 

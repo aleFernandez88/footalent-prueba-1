@@ -5,13 +5,16 @@ import {
   sanitizeString,
 } from "@utils/validators";
 import { sendError } from "@utils/httpResponses";
+import { USER_ROLES, UserRole } from "./users.types";
+
+type AllowedRole = UserRole;
 
 export const validateUserRegistration = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { email, password, name } = req.body ?? {};
+  const { email, password, name, role } = req.body ?? {};
   const errors: string[] = [];
 
   // Email validation
@@ -40,6 +43,20 @@ export const validateUserRegistration = (
     }
   }
 
+  // Role validation (optional, defaults to USER)
+  let normalizedRole: AllowedRole = "USER";
+
+  if (role !== undefined) {
+    const candidate = String(role).trim().toUpperCase();
+    if (USER_ROLES.includes(candidate as AllowedRole)) {
+      normalizedRole = candidate as AllowedRole;
+    } else {
+      errors.push(
+        "El rol proporcionado no es válido. Valores permitidos: ADMIN, USER"
+      );
+    }
+  }
+
   if (errors.length > 0) {
     return sendError(res, {
       statusCode: 400,
@@ -51,6 +68,7 @@ export const validateUserRegistration = (
   // Sanitize email and password before passing to controller
   req.body.email = (email as string).trim().toLowerCase();
   req.body.password = (password as string).trim();
+  req.body.role = normalizedRole;
 
   return next();
 };
