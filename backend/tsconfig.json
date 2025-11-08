@@ -25,6 +25,7 @@
       "@utils/*": ["./src/utils/*"],
       "@config/*": ["./src/config/*"],
       "@routes/*": ["./src/routes/*"],
+      "@middleware/*": ["./src/middleware/*"],
       "@tests/*": ["./tests/*"]
     }
   },

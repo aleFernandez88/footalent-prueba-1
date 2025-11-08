@@ -1,18 +1,24 @@
-import { Router, Request, Response } from "express";
+import { Router, Response } from "express";
 import { sendSuccess } from "@utils/httpResponses";
+import {
+  authenticateToken,
+  AuthenticatedRequest,
+} from "@middleware/auth.middleware";
 
 const router: Router = Router();
 
 /**
  * @swagger
- * /api/test:
+ * /api/test/protected:
  *   get:
- *     summary: Test endpoint
+ *     summary: Test protegido con autenticación JWT
  *     tags: [Test]
- *     description: A simple test endpoint to verify the API is working
+ *     description: Verifica que el middleware de autenticación JWT funcione correctamente.
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Successful response
+ *         description: Respuesta exitosa con datos del token.
  *         content:
  *           application/json:
  *             schema:
@@ -23,21 +29,27 @@ const router: Router = Router();
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Test endpoint is working!
+ *                   example: Acceso concedido
  *                 data:
  *                   type: object
  *                   properties:
- *                     timestamp:
- *                       type: string
- *                       format: date-time
+ *                     tokenPayload:
+ *                       type: object
+ *                       additionalProperties: true
+ *       401:
+ *         description: Token no proporcionado o inválido.
  */
-router.get("/", (_req: Request, res: Response) => {
-  sendSuccess(res, {
-    message: "Test endpoint trabajando!",
-    data: {
-      timestamp: new Date().toISOString(),
-    },
-  });
-});
+router.get(
+  "/protected",
+  authenticateToken,
+  (req: AuthenticatedRequest, res: Response) => {
+    sendSuccess(res, {
+      message: "Acceso concedido",
+      data: {
+        tokenPayload: req.user ?? null,
+      },
+    });
+  }
+);
 
 export default router;
