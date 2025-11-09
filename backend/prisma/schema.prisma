@@ -10,7 +10,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Example model
+// ----------------------
+// Users
+// ----------------------
+
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
@@ -25,3 +28,17 @@ enum Role {
   ADMIN
 }
 
+
+// ----------------------
+// Products
+// ----------------------
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  name      String
+  price     Float
+  code      String   @unique
+  stock     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

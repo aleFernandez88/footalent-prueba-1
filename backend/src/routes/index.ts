@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import testRoutes from "./test.routes";
 import userRoutes from "@core/users/user.routes";
+import productRoutes from "@core/products/products.routes";
 import { sendSuccess } from "@utils/httpResponses";
 
 const router: Router = Router();
@@ -45,5 +46,8 @@ router.use("/test", testRoutes);
 
 // User routes
 router.use("/users", userRoutes);
+
+// Product routes
+router.use("/products", productRoutes);
 
 export default router;
