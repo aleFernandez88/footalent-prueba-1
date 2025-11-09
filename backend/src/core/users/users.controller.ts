@@ -30,3 +30,35 @@ export const createUserController = async (req: Request, res: Response) => {
     });
   }
 };
+
+/**
+ * Obtiene todos los usuarios (solo admin)
+ */
+export const getAllUsersController = async (_req: Request, res: Response) => {
+  try {
+    const users = await UserService.getAllUsers();
+    return res.status(200).json(users);
+  } catch (error: any) {
+    console.error("Error en getAllUsersController:", error);
+    return res.status(500).json({ error: "Error al obtener usuarios" });
+  }
+};
+
+/**
+ * Obtiene un usuario por ID (solo el dueño o admin)
+ */
+export const getUserByIdController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const user = await UserService.getUserById(id);
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    return res.status(200).json(user);
+  } catch (error: any) {
+    console.error("Error en getUserByIdController:", error);
+    return res.status(500).json({ error: "Error al obtener usuario" });
+  }
+};

@@ -28,4 +28,15 @@ export const UserService = {
     // Crear usuario
     return UserRepository.create(email, name, role);
   },
+  //Obtener todos los usuarios
+  getAllUsers: async () => {
+    return UserRepository.findAll();
+  },
+
+  //Obtener un usuario por ID
+  getUserById: async (id: string) => {
+    const user = await UserRepository.findById(id);
+    if (!user) throw new Error("Usuario no encontrado");
+    return user;
+  },
 };
