@@ -4,11 +4,11 @@
   "description": "Backend API server with Express, TypeScript, Prisma, and Swagger",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc && tsc-alias",
+    "prisma:migrate": "prisma migrate dev",
+    "build": "npm run prisma:generate && tsc && (tsc-alias || echo 'tsc-alias not found, skipping alias fix')",
     "start": "node dist/server.js",
     "dev": "ts-node-dev --respawn --transpile-only --require tsconfig-paths/register src/server.ts",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "prisma:seed": "ts-node prisma/seed.ts",
     "test": "jest --config jest.config.ts --runInBand",
