@@ -23,22 +23,34 @@ const router: Router = Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Acceso concedido
- *                 data:
- *                   type: object
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
  *                   properties:
- *                     tokenPayload:
+ *                     data:
  *                       type: object
- *                       additionalProperties: true
+ *                       properties:
+ *                         tokenPayload:
+ *                           type: object
+ *                           additionalProperties: true
+ *             examples:
+ *               success:
+ *                 summary: Token válido
+ *                 value:
+ *                   success: true
+ *                   statusCode: 200
+ *                   message: "Acceso concedido"
+ *                   data:
+ *                     tokenPayload:
+ *                       sub: 1
+ *                       email: "user@example.com"
+ *                       role: "USER"
  *       401:
  *         description: Token no proporcionado o inválido.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.get(
   "/protected",
@@ -68,22 +80,37 @@ router.get(
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Acceso administrador concedido
- *                 data:
- *                   type: object
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
  *                   properties:
- *                     role:
- *                       type: string
- *                       example: ADMIN
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         role:
+ *                           type: string
+ *                           example: "ADMIN"
+ *             examples:
+ *               success:
+ *                 summary: Acceso administrador
+ *                 value:
+ *                   success: true
+ *                   statusCode: 200
+ *                   message: "Acceso administrador concedido"
+ *                   data:
+ *                     role: "ADMIN"
  *       403:
  *         description: Acceso denegado por falta de permisos.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: Token no proporcionado o inválido.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.get(
   "/admin",
