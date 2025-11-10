@@ -4,10 +4,16 @@ import { Router } from "express";
 //     getAllUsersController,
 //     getUserByIdController
 // } from "./users.controller";
-import { createUserController, getAllUsersController, getUserByIdController } from "./users.controller";
-import { authenticateToken } from "@/middleware/auth.middleware";
-import { authorizeRolesOrSelf } from "@/middlewares/authorizeRolesOrSelf";
-import { validateUserRegistration } from "../users/users.validation";
+import {
+  createUserController,
+  getAllUsersController,
+  getUserByIdController,
+} from "@core/users/users.controller";
+import {
+  authenticateToken,
+  authorizeRolesOrSelf,
+} from "@middleware/auth.middleware";
+import { validateUserRegistration } from "@core/users/users.validation";
 
 const router = Router();
 
@@ -71,7 +77,12 @@ router.post("/register", validateUserRegistration, createUserController);
  *       403:
  *         description: Acceso denegado
  */
-router.get("/getAllUsers", authenticateToken, authorizeRolesOrSelf(["ADMIN"]), getAllUsersController);
+router.get(
+  "/getAllUsers",
+  authenticateToken,
+  authorizeRolesOrSelf(["ADMIN"]),
+  getAllUsersController
+);
 
 /**
  * @swagger
@@ -98,6 +109,11 @@ router.get("/getAllUsers", authenticateToken, authorizeRolesOrSelf(["ADMIN"]), g
  *       404:
  *         description: Usuario no encontrado
  */
-router.get("/getUserById/:id", authenticateToken, authorizeRolesOrSelf(["ADMIN"], true), getUserByIdController);
+router.get(
+  "/getUserById/:id",
+  authenticateToken,
+  authorizeRolesOrSelf(["ADMIN"], true),
+  getUserByIdController
+);
 
 export default router;

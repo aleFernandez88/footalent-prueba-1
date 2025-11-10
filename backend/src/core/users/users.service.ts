@@ -35,8 +35,18 @@ export const UserService = {
 
   //Obtener un usuario por ID
   getUserById: async (id: string) => {
-    const user = await UserRepository.findById(id);
-    if (!user) throw new Error("Usuario no encontrado");
+    const numericId = Number(id);
+
+    if (!Number.isInteger(numericId) || numericId <= 0) {
+      throw new AppError("ID de usuario inválido", 400);
+    }
+
+    const user = await UserRepository.findById(numericId);
+
+    if (!user) {
+      throw new AppError("Usuario no encontrado", 404);
+    }
+
     return user;
   },
 };
