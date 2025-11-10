@@ -8,6 +8,7 @@ import type { UserRole } from "@core/users/users.types";
 import { AppError } from "@utils/errors";
 
 export interface TokenPayload extends JwtPayload {
+  id?: string;
   role?: UserRole;
 }
 
@@ -93,3 +94,33 @@ export const authorizeRoles =
 
     return next();
   };
+
+export const authorizeRolesOrSelf = (
+  allowedRoles: UserRole[],
+  allowSelf = false
+) => {
+  return (
+    req: AuthenticatedRequest<TokenPayload>,
+    _res: Response,
+    next: NextFunction
+  ) => {
+    const user = req.user;
+    const paramId = req.params.id;
+
+    if (!user || typeof user === "string") {
+      return next(new AppError("No autorizado", 403));
+    }
+
+    if (allowSelf && paramId && user.id === paramId) {
+      return next();
+    }
+
+    if (user.role && allowedRoles.includes(user.role)) {
+      return next();
+    }
+
+    return next(
+      new AppError("No tienes permisos para acceder a este recurso", 403)
+    );
+  };
+};

@@ -1,5 +1,14 @@
-import { ZodTypeAny } from "zod";
 import { Request, Response, NextFunction } from "express";
+import { ZodTypeAny } from "zod";
+
+import { sendError } from "@utils/httpResponses";
+import { sanitizeString } from "@utils/validators";
+
+const normalizeIssues = (issues: { message: string }[]): string[] => {
+  return issues
+    .map(({ message }) => sanitizeString(message) ?? "Dato inválido")
+    .filter(Boolean) as string[];
+};
 
 export const validate =
   (schemas: { body?: ZodTypeAny; params?: ZodTypeAny; query?: ZodTypeAny }) =>
@@ -9,9 +18,10 @@ export const validate =
       if (schemas.body) {
         const result = schemas.body.safeParse(req.body);
         if (!result.success) {
-            console.log("error", result)
-          res.status(400).json({
-            error: result.error.issues.map((i) => i.message),
+          sendError(res, {
+            statusCode: 400,
+            message: "Datos del cuerpo inválidos",
+            errors: normalizeIssues(result.error.issues),
           });
           return;
         }
@@ -22,8 +32,10 @@ export const validate =
       if (schemas.params) {
         const result = schemas.params.safeParse(req.params);
         if (!result.success) {
-          res.status(400).json({
-            error: result.error.issues.map((i) => i.message),
+          sendError(res, {
+            statusCode: 400,
+            message: "Parámetros inválidos",
+            errors: normalizeIssues(result.error.issues),
           });
           return;
         }
@@ -34,8 +46,10 @@ export const validate =
       if (schemas.query) {
         const result = schemas.query.safeParse(req.query);
         if (!result.success) {
-          res.status(400).json({
-            error: result.error.issues.map((i) => i.message),
+          sendError(res, {
+            statusCode: 400,
+            message: "Query inválida",
+            errors: normalizeIssues(result.error.issues),
           });
           return;
         }
@@ -44,6 +58,9 @@ export const validate =
 
       next();
     } catch (e) {
-      res.status(500).json({ error: "Error interno en validación" });
+      sendError(res, {
+        statusCode: 500,
+        message: "Error interno en validación",
+      });
     }
   };
