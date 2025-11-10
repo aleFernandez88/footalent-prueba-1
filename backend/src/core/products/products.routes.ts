@@ -31,11 +31,27 @@ const router = Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Product'
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Product'
  *       500:
  *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               serverError:
+ *                 summary: Fallo inesperado
+ *                 value:
+ *                   success: false
+ *                   statusCode: 500
+ *                   message: "Ha ocurrido un error inesperado"
  */
 router.get("/", getProductsController);
 
@@ -51,15 +67,38 @@ router.get("/", getProductsController);
  *         required: true
  *         schema:
  *           type: integer
+ *           minimum: 1
  *     responses:
  *       200:
  *         description: Producto encontrado
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Product'
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/Product'
  *       404:
  *         description: Producto no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               notFound:
+ *                 summary: Producto inexistente
+ *                 value:
+ *                   success: false
+ *                   statusCode: 404
+ *                   message: "Producto no encontrado"
+ *       400:
+ *         description: Parámetro ID inválido.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.get("/:id", getProductByIdController);
 
@@ -84,23 +123,85 @@ router.get("/:id", getProductByIdController);
  *             properties:
  *               name:
  *                 type: string
+ *                 example: "Balón profesional"
  *               price:
  *                 type: number
+ *                 format: float
+ *                 example: 149.99
  *               code:
  *                 type: string
+ *                 example: "PROD-0010"
  *               stock:
  *                 type: integer
+ *                 example: 25
+ *           example:
+ *             name: "Balón profesional"
+ *             price: 149.99
+ *             code: "PROD-0010"
+ *             stock: 25
  *     responses:
  *       201:
  *         description: Producto creado exitosamente
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Product'
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/Product'
+ *                   required:
+ *                     - data
+ *             examples:
+ *               created:
+ *                 summary: Producto creado
+ *                 value:
+ *                   success: true
+ *                   statusCode: 201
+ *                   message: "Producto creado exitosamente"
+ *                   data:
+ *                     id: 25
+ *                     name: "Balón profesional"
+ *                     price: 149.99
+ *                     code: "PROD-0010"
+ *                     stock: 25
+ *                     createdAt: "2025-11-10T03:00:00.000Z"
+ *                     updatedAt: "2025-11-10T03:00:00.000Z"
  *       400:
  *         description: Datos inválidos o producto duplicado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               validation:
+ *                 summary: Validación fallida
+ *                 value:
+ *                   success: false
+ *                   statusCode: 400
+ *                   message: "Datos de registro inválidos"
+ *                   errors:
+ *                     - "El nombre es obligatorio"
+ *       409:
+ *         description: El código del producto ya existe.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               conflict:
+ *                 summary: Código duplicado
+ *                 value:
+ *                   success: false
+ *                   statusCode: 409
+ *                   message: "El código ya existe"
  *       500:
  *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.post("/", validate({ body: productSchema }), createProductController);
 
@@ -116,6 +217,7 @@ router.post("/", validate({ body: productSchema }), createProductController);
  *         required: true
  *         schema:
  *           type: integer
+ *           minimum: 1
  *     requestBody:
  *       required: true
  *       content:
@@ -137,11 +239,36 @@ router.post("/", validate({ body: productSchema }), createProductController);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Product'
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/Product'
  *       404:
  *         description: Producto no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
  *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       400:
+ *         description: ID inválido o datos inconsistentes.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       409:
+ *         description: Código de producto duplicado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.put("/:id", updateProductController);
 
@@ -157,13 +284,37 @@ router.put("/:id", updateProductController);
  *         required: true
  *         schema:
  *           type: integer
+ *           minimum: 1
  *     responses:
  *       200:
  *         description: Producto eliminado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       nullable: true
  *       404:
  *         description: Producto no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
  *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       400:
+ *         description: ID inválido.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.delete("/:id", deleteProductController);
 
