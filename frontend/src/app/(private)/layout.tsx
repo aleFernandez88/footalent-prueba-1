@@ -1,3 +1,8 @@
+ //dato mockeado  import ClientGuard from "../guard/ClientGuard";
+import Link from "next/link";
+
+
+ import Logout from "@/src/components/Logout";
  import ClientGuard from "../guard/ClientGuard";
 import Link from "next/link";
 
@@ -11,6 +16,8 @@ export const metadata = {
 
 export default function PrivateLayout({ children }: { children: React.ReactNode }) {
   return (
+   //dato mockeado <ClientGuard>  
+    <>
    <ClientGuard>  
     
       {/* flexbox para crear el layout de Sidebar + Contenido */}
@@ -28,6 +35,7 @@ export default function PrivateLayout({ children }: { children: React.ReactNode 
                 </Link>
               </li>
               
+              {/* enlace a Productos */}
               {/*  Aquí está tu nuevo enlace a Productos */}
               <li className="mb-4">
                 <Link href="/products" className="block p-2 rounded hover:bg-gray-700">
@@ -39,6 +47,10 @@ export default function PrivateLayout({ children }: { children: React.ReactNode 
             </ul>
           </nav>
           
+          
+          <div className="mt-auto">
+            {/* Aca   botón de Logout */}
+            { <Logout /> }
           <div className="mt-auto">
             {/* Aca   botón de Logout */}
             {/* <Logout /> */}
@@ -52,6 +64,7 @@ export default function PrivateLayout({ children }: { children: React.ReactNode 
         </main>
       </div>
       
+   </>  // dato mockeado  </ClientGuard>
     </ClientGuard>
   );
 }
