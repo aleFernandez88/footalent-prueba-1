@@ -11,3 +11,17 @@ export interface IApiResponse {
     statusCode?: number;
     errors?: string[];
 }
+
+export interface ILoginData {
+    email: string;
+    password: string;
+}
+
+export interface ILoginResponse {
+    success: boolean;
+    message: string;
+    data: {
+        token: string;
+        user: { id: string | number; email: string; name?: string; role?: string };
+    };
+}

@@ -5,9 +5,9 @@ import { isAppError } from "@utils/errors";
 
 export const createUserController = async (req: Request, res: Response) => {
   try {
-    const { email, name, role } = req.body;
+    const { email, name, role, password } = req.body;
 
-    const user = await UserService.createUser(email, name, role);
+    const user = await UserService.createUser(email, name, role, password);
 
     return sendSuccess(res, {
       statusCode: 201,
@@ -61,4 +61,34 @@ export const getUserByIdController = async (req: Request, res: Response) => {
     console.error("Error en getUserByIdController:", error);
     return res.status(500).json({ error: "Error al obtener usuario" });
   }
+
+
 };
+
+export const loginController = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    const result = await UserService.login(email, password);
+
+    return sendSuccess(res, {
+      statusCode: 200,
+      message: "Login exitoso",
+      data: result,
+    });
+  } catch (error: any) {
+    console.error("Error en loginController:", error);
+    if (isAppError(error)) {
+      return sendError(res, {
+        statusCode: error.statusCode,
+        message: error.message,
+        errors: error.details,
+      });
+    }
+
+    return sendError(res, {
+      statusCode: 500,
+      message: "Error inesperado en el login",
+    });
+  }
+};
+
