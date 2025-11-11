@@ -3,6 +3,11 @@ import Link from "next/link";
 
 
  import Logout from "@/src/components/Logout";
+ import ClientGuard from "../guard/ClientGuard";
+import Link from "next/link";
+
+//siguiente tarea: agregar un logout button
+// import Logout from "@/components/Logout";
 
 
 export const metadata = {
@@ -13,6 +18,8 @@ export default function PrivateLayout({ children }: { children: React.ReactNode 
   return (
    //dato mockeado <ClientGuard>  
     <>
+   <ClientGuard>  
+    
       {/* flexbox para crear el layout de Sidebar + Contenido */}
       <div className="flex min-h-screen">
         
@@ -29,6 +36,7 @@ export default function PrivateLayout({ children }: { children: React.ReactNode 
               </li>
               
               {/* enlace a Productos */}
+              {/*  Aquí está tu nuevo enlace a Productos */}
               <li className="mb-4">
                 <Link href="/products" className="block p-2 rounded hover:bg-gray-700">
                   Productos
@@ -43,6 +51,9 @@ export default function PrivateLayout({ children }: { children: React.ReactNode 
           <div className="mt-auto">
             {/* Aca   botón de Logout */}
             { <Logout /> }
+          <div className="mt-auto">
+            {/* Aca   botón de Logout */}
+            {/* <Logout /> */}
             <p className="text-sm text-gray-400">Usuario: {/**/}</p>
           </div>
         </aside>
@@ -54,5 +65,6 @@ export default function PrivateLayout({ children }: { children: React.ReactNode 
       </div>
       
    </>  // dato mockeado  </ClientGuard>
+    </ClientGuard>
   );
 }

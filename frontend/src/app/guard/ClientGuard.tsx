@@ -6,10 +6,8 @@ import { useRouter } from "next/navigation";
 type Props = { children: React.ReactNode };
 
 /**
- * Client-side guard that checks for a valid token in localStorage.
- * If there's no token it redirects to /login. While checking, renders nothing.
- *
- * Assumption: the token is stored in localStorage under the key 'token'.
+ * Client-side guard that checks for a valid auth object in localStorage.
+ * If there's no valid token inside 'auth', redirects to /login.
  */
 export default function ClientGuard({ children }: Props) {
   const [checked, setChecked] = useState(false);
@@ -17,12 +15,20 @@ export default function ClientGuard({ children }: Props) {
 
   useEffect(() => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
+      const stored = localStorage.getItem("auth");
+      if (!stored) {
         router.replace("/login");
-      } else {
-        setChecked(true);
+        return;
       }
+
+      const parsed = JSON.parse(stored);
+      if (!parsed?.token) {
+        router.replace("/login");
+        return;
+      }
+
+      // ✅ Si todo está OK
+      setChecked(true);
     } catch (err) {
       router.replace("/login");
     }

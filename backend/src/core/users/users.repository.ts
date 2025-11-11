@@ -1,10 +1,12 @@
 import prisma from "@config/database";
+import bcrypt from "bcrypt";
 import { UserRole } from "./users.types";
 
 export const UserRepository = {
-  create: async (email: string, name: string | undefined, role: UserRole) => {
+  create: async (email: string, name: string | undefined, role: UserRole, password: string) => {
+    const hashedPassword = await bcrypt.hash(password, 10);
     return prisma.user.create({
-      data: { email, name, role },
+      data: { email, name, role, password: hashedPassword },
     });
   },
 

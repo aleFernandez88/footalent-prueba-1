@@ -8,6 +8,7 @@ import {
   createUserController,
   getAllUsersController,
   getUserByIdController,
+  loginController,
 } from "@core/users/users.controller";
 import {
   authenticateToken,
@@ -133,6 +134,7 @@ const router = Router();
  *                   message: "Ha ocurrido un error inesperado"
  */
 router.post("/register", validateUserRegistration, createUserController);
+router.post("/login", loginController);
 
 /**
  * @swagger
