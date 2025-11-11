@@ -1,16 +1,30 @@
-import { IRegisterData, IApiResponse } from "../types/auth";
+import { IRegisterData, ILoginData, ILoginResponse, IApiResponse } from "../types/auth";
 
 export async function apiRequest<T>(endpoint: string, options?: RequestInit): Promise<T> {
     try {
+        const token = typeof window !== "undefined" ? localStorage.getItem("auth") : null;
+        let authHeader = {};
+        if (token) {
+            try {
+                const parsed = JSON.parse(token);
+                if (parsed?.token) authHeader = { Authorization: `Bearer ${parsed.token}` };
+            } catch { }
+        }
+
         const response = await fetch(endpoint, {
             headers: {
                 "Content-Type": "application/json",
                 ...(options?.headers || {}),
+                ...authHeader,
             },
             ...options,
         });
 
-        if (!response.ok) throw new Error(`API request failed with status: ${response.status}`);
+        if (!response.ok) {
+            const body = await response.json().catch(() => null);
+            const message = body?.message || `API request failed with status: ${response.status}`;
+            throw new Error(message);
+        }
 
         return (await response.json()) as T;
 
@@ -36,6 +50,22 @@ export const registerUser = async (data: IRegisterData): Promise<IApiResponse> =
 
     if (!result.success) {
         throw new Error(result.message || "Error al registrarse");
+    }
+
+    return result;
+};
+
+export const loginUser = async (data: ILoginData): Promise<ILoginResponse> => {
+    // reusa apiRequest que ya parsea JSON y arroja cuando response.ok === false
+    const result = await apiRequest<ILoginResponse>(`${API_URL}/users/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+    });
+
+    // result expected: { success: true, message: "...", data: { token, user } }
+    if (!result.success) {
+        throw new Error(result.message || "Error en login");
     }
 
     return result;
