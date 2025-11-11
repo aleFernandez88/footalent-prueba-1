@@ -7,6 +7,8 @@ const publicRoutes = ['/', '/login', '/register'];
 const privateRoutes = ['/dashboard']; // ingresar futuras rutas privadas
 
 export function middleware(request: NextRequest) {
+return NextResponse.next();
+
   //  Obtiene la cookie de autenticación (o como sea que manejes la sesión)
   const authToken = request.cookies.get('auth_token')?.value;
 
@@ -35,8 +37,11 @@ export function middleware(request: NextRequest) {
 
   // Si no se cumple ninguna condición, déjalo pasar
   return NextResponse.next();
-}
 
+
+
+
+}
 // Configuración del Matcher
 export const config = {
   matcher: [
