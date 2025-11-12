@@ -44,9 +44,6 @@ export const getAllUsersController = async (_req: Request, res: Response) => {
   }
 };
 
-/**
- * Obtiene un usuario por ID (solo el dueño o admin)
- */
 export const getUserByIdController = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -88,6 +85,63 @@ export const loginController = async (req: Request, res: Response) => {
     return sendError(res, {
       statusCode: 500,
       message: "Error inesperado en el login",
+    });
+  }
+};
+
+export const updateUserController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { email, name, role, password } = req.body;
+
+    const updatedUser = await UserService.updateUser(id, { email, name, role, password });
+
+    return sendSuccess(res, {
+      statusCode: 200,
+      message: "Usuario actualizado exitosamente",
+      data: updatedUser,
+    });
+  } catch (error: any) {
+    console.error("Error en updateUserController:", error);
+    if (isAppError(error)) {
+      return sendError(res, {
+        statusCode: error.statusCode,
+        message: error.message,
+        errors: error.details,
+      });
+    }
+
+    return sendError(res, {
+      statusCode: 500,
+      message: "Ha ocurrido un error inesperado al actualizar el usuario",
+    });
+  }
+};
+
+export const deleteUserController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    await UserService.deleteUser(id);
+
+    return sendSuccess(res, {
+      statusCode: 200,
+      message: "Usuario eliminado exitosamente",
+      data: null,
+    });
+  } catch (error: any) {
+    console.error("Error en deleteUserController:", error);
+    if (isAppError(error)) {
+      return sendError(res, {
+        statusCode: error.statusCode,
+        message: error.message,
+        errors: error.details,
+      });
+    }
+
+    return sendError(res, {
+      statusCode: 500,
+      message: "Ha ocurrido un error inesperado al eliminar el usuario",
     });
   }
 };

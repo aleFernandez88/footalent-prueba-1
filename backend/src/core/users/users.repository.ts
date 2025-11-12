@@ -40,4 +40,31 @@ export const UserRepository = {
       },
     });
   },
+
+  update: async (id: number, data: Partial<{ email: string; name: string; role: UserRole; password: string }>) => {
+    return prisma.user.update({
+      where: { id },
+      data,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+      },
+    });
+  },
+
+  delete: async (id: number) => {
+    return prisma.user.delete({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+      },
+    });
+  },
 };

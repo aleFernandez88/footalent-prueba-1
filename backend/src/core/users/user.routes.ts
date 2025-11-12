@@ -6,15 +6,17 @@ import { Router } from "express";
 // } from "./users.controller";
 import {
   createUserController,
+  deleteUserController,
   getAllUsersController,
   getUserByIdController,
   loginController,
+  updateUserController,
 } from "@core/users/users.controller";
 import {
   authenticateToken,
   authorizeRolesOrSelf,
 } from "@middleware/auth.middleware";
-import { validateUserRegistration } from "@core/users/users.validation";
+import { validateUserRegistration, validateUserUpdate } from "@core/users/users.validation";
 
 const router = Router();
 
@@ -421,5 +423,155 @@ router.get(
   authorizeRolesOrSelf(["ADMIN"], true),
   getUserByIdController
 );
+
+/**
+ * @swagger
+ * /api/users/{id}:
+ *   put:
+ *     summary: Actualizar un usuario
+ *     tags: [Users]
+ *     description: Actualiza los datos de un usuario por ID. Todos los campos son opcionales.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del usuario a actualizar
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "nuevo@example.com"
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: "NewPass123"
+ *               name:
+ *                 type: string
+ *                 nullable: true
+ *                 example: "Nuevo Nombre"
+ *               role:
+ *                 type: string
+ *                 enum: [USER, ADMIN]
+ *                 example: "ADMIN"
+ *     responses:
+ *       200:
+ *         description: Usuario actualizado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: "Usuario actualizado exitosamente"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     email:
+ *                       type: string
+ *                       example: "nuevo@example.com"
+ *                     name:
+ *                       type: string
+ *                       nullable: true
+ *                       example: "Nuevo Nombre"
+ *                     role:
+ *                       type: string
+ *                       enum: [USER, ADMIN]
+ *                       example: "ADMIN"
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-11-10T03:00:00.000Z"
+ *       400:
+ *         description: Datos de actualización inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Usuario no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Error inesperado del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.put("/:id", validateUserUpdate, updateUserController);
+
+/**
+ * @swagger
+ * /api/users/{id}:
+ *   delete:
+ *     summary: Eliminar un usuario
+ *     tags: [Users]
+ *     description: Elimina un usuario por su ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del usuario a eliminar
+ *     responses:
+ *       200:
+ *         description: Usuario eliminado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: "Usuario eliminado exitosamente"
+ *                 data:
+ *                   type: null
+ *       400:
+ *         description: ID inválido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Usuario no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Error inesperado del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.delete("/:id", deleteUserController);
 
 export default router;
