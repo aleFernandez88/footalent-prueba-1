@@ -34,13 +34,29 @@ export const createUserController = async (req: Request, res: Response) => {
 /**
  * Obtiene todos los usuarios (solo admin)
  */
-export const getAllUsersController = async (_req: Request, res: Response) => {
+export const getAllUsersController = async (req: Request, res: Response) => {
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 20;
   try {
-    const users = await UserService.getAllUsers();
-    return res.status(200).json(users);
+    const result = await UserService.getAllUsers(page, limit);
+
+    return res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: "Usuarios obtenidos correctamente",
+      data: result.data,
+      page: result.page,
+      total: result.total,
+      pages: result.pages,
+    });
   } catch (error: any) {
     console.error("Error en getAllUsersController:", error);
-    return res.status(500).json({ error: "Error al obtener usuarios" });
+    return res.status(500).json({
+      success: false,
+      statusCode: 500,
+      message: "Error al obtener usuarios",
+      errors: error.message || error,
+    });
   }
 };
 

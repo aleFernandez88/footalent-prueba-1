@@ -340,7 +340,7 @@ router.post("/login", loginController);
  *                   example: "Error al obtener usuarios"
  */
 router.get(
-  "/getAllUsers",
+  "/",
   authenticateToken,
   authorizeRolesOrSelf(["ADMIN"]),
   getAllUsersController

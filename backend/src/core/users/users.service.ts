@@ -37,8 +37,8 @@ export const UserService = {
   },
 
   //Obtener todos los usuarios
-  getAllUsers: async () => {
-    return UserRepository.findAll();
+  getAllUsers: async (page: number, limit: number) => {
+    return UserRepository.findAll(page, limit);
   },
 
   //Obtener un usuario por ID
