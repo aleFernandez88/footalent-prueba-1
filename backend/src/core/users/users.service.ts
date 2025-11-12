@@ -83,4 +83,39 @@ export const UserService = {
       },
     };
   },
+
+  // Actualizar usuario
+
+  updateUser: async (id: string, data: Partial<{ email: string; name: string; role: UserRole; password: string }>) => {
+    const numericId = Number(id);
+    if (!Number.isInteger(numericId) || numericId <= 0) {
+      throw new AppError("ID de usuario inválido", 400);
+    }
+
+    const existingUser = await UserRepository.findById(numericId);
+    if (!existingUser) throw new AppError("Usuario no encontrado", 404);
+
+    if (data.role && !USER_ROLES.includes(data.role)) {
+      throw new AppError("Rol de usuario inválido", 400);
+    }
+
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password, 10); // Hash de la nueva contraseña
+    }
+
+    return UserRepository.update(numericId, data);
+  },
+
+  // Eliminar usuario
+  deleteUser: async (id: string) => {
+    const numericId = Number(id);
+    if (!Number.isInteger(numericId) || numericId <= 0) {
+      throw new AppError("ID de usuario inválido", 400);
+    }
+
+    const existingUser = await UserRepository.findById(numericId);
+    if (!existingUser) throw new AppError("Usuario no encontrado", 404);
+
+    return UserRepository.delete(numericId);
+  },
 };
