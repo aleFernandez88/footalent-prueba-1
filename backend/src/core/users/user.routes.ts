@@ -70,70 +70,217 @@ const router = Router();
  *         content:
  *           application/json:
  *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 201
+ *                 message:
+ *                   type: string
+ *                   example: "Usuario creado exitosamente"
+ *                 data:
+ *                   type: object
  *                   properties:
- *                     data:
- *                       $ref: '#/components/schemas/User'
- *                   required:
- *                     - data
- *             examples:
- *               success:
- *                 summary: Ejemplo de usuario creado
- *                 value:
- *                   success: true
- *                   statusCode: 201
- *                   message: "Usuario creado exitosamente"
- *                   data:
- *                     id: 12
- *                     email: "test@example.com"
- *                     name: "Miguel"
- *                     role: "ADMIN"
- *                     createdAt: "2025-11-10T03:00:00.000Z"
+ *                     id:
+ *                       type: integer
+ *                       example: 12
+ *                     email:
+ *                       type: string
+ *                       example: "test@example.com"
+ *                     name:
+ *                       type: string
+ *                       nullable: true
+ *                       example: "Miguel"
+ *                     role:
+ *                       type: string
+ *                       enum: [USER, ADMIN]
+ *                       example: "ADMIN"
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-11-10T03:00:00.000Z"
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-11-10T03:00:00.000Z"
  *       400:
  *         description: Datos de registro inválidos.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               validation:
- *                 summary: Validación fallida
- *                 value:
- *                   success: false
- *                   statusCode: 400
- *                   message: "Datos de registro inválidos"
- *                   errors:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 400
+ *                 message:
+ *                   type: string
+ *                   example: "Datos de registro inválidos"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example:
  *                     - "El correo electrónico es obligatorio y debe tener un formato válido"
  *       409:
  *         description: El usuario ya existe.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               duplicated:
- *                 summary: Usuario duplicado
- *                 value:
- *                   success: false
- *                   statusCode: 409
- *                   message: "El usuario ya existe"
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 409
+ *                 message:
+ *                   type: string
+ *                   example: "El usuario ya existe"
  *       500:
  *         description: Error inesperado en el servidor.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               serverError:
- *                 summary: Error interno
- *                 value:
- *                   success: false
- *                   statusCode: 500
- *                   message: "Ha ocurrido un error inesperado"
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: "Ha ocurrido un error inesperado"
  */
 router.post("/register", validateUserRegistration, createUserController);
+
+/**
+ * @swagger
+ * /api/users/login:
+ *   post:
+ *     summary: Iniciar sesión de usuario
+ *     tags: [Users]
+ *     description: Permite iniciar sesión con email y contraseña. Si las credenciales son válidas, devuelve un token JWT y los datos del usuario.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "test@example.com"
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: "Passw0rd123"
+ *           example:
+ *             email: "test@example.com"
+ *             password: "Passw0rd123"
+ *     responses:
+ *       200:
+ *         description: Inicio de sesión exitoso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: "Login exitoso"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     token:
+ *                       type: string
+ *                       description: Token JWT válido por 7 días.
+ *                       example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: integer
+ *                           example: 1
+ *                         email:
+ *                           type: string
+ *                           example: "test@example.com"
+ *                         name:
+ *                           type: string
+ *                           nullable: true
+ *                           example: "Miguel"
+ *                         role:
+ *                           type: string
+ *                           enum: [USER, ADMIN]
+ *                           example: "ADMIN"
+ *       400:
+ *         description: Datos enviados inválidos.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 400
+ *                 message:
+ *                   type: string
+ *                   example: "Datos de login inválidos"
+ *       401:
+ *         description: Credenciales inválidas.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 401
+ *                 message:
+ *                   type: string
+ *                   example: "Credenciales inválidas"
+ *       500:
+ *         description: Error inesperado en el servidor.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: "Error inesperado en el login"
+ */
 router.post("/login", loginController);
 
 /**
