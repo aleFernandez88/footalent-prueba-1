@@ -5,8 +5,6 @@ import Link from "next/link";
  import ClientGuard from "../guard/ClientGuard";
 
 
-//siguiente tarea: agregar un logout button
-// import Logout from "@/components/Logout";
 
 
 export const metadata = {
@@ -15,8 +13,9 @@ export const metadata = {
 
 export default function PrivateLayout({ children }: { children: React.ReactNode }) {
   return (
-   //dato mockeado <ClientGuard>  
-    
+   
+   
+    //dato mockeado <ClientGuard>   
    <ClientGuard>  
     
       {/* flexbox para crear el layout de Sidebar + Contenido */}
